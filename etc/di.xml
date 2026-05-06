@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+    <preference for="LeanCommerce\CategoryProductOrderApi\Api\CategoryProductOrderInterface"
+                type="LeanCommerce\CategoryProductOrderApi\Model\Service\GetCategoryProductOrder"/>
+
+    <preference for="LeanCommerce\CategoryProductOrderApi\Api\CategoryProductOrderUpdateInterface"
+                type="LeanCommerce\CategoryProductOrderApi\Model\Service\UpdateCategoryProductOrder"/>
+
+    <preference for="LeanCommerce\CategoryProductOrderApi\Api\Data\CategoryProductOrderResponseInterface"
+                type="LeanCommerce\CategoryProductOrderApi\Model\Data\CategoryProductOrderResponse"/>
+
+    <preference for="LeanCommerce\CategoryProductOrderApi\Api\Data\CategoryProductOrderItemInterface"
+                type="LeanCommerce\CategoryProductOrderApi\Model\Data\CategoryProductOrderItem"/>
+
+    <preference for="LeanCommerce\CategoryProductOrderApi\Api\Data\CategoryProductOrderUpdateResponseInterface"
+                type="LeanCommerce\CategoryProductOrderApi\Model\Data\CategoryProductOrderUpdateResponse"/>
+
+</config>

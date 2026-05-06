@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+
+    <route url="/V1/leancommerce/category-products/order" method="GET">
+        <service class="LeanCommerce\CategoryProductOrderApi\Api\CategoryProductOrderInterface" method="execute"/>
+        <resources>
+            <resource ref="LeanCommerce_CategoryProductOrderApi::category_product_order"/>
+        </resources>
+    </route>
+    <route url="/V1/leancommerce/category-products/order" method="PUT">
+        <service class="LeanCommerce\CategoryProductOrderApi\Api\CategoryProductOrderUpdateInterface" method="execute"/>
+        <resources>
+            <resource ref="LeanCommerce_CategoryProductOrderApi::category_product_order"/>
+        </resources>
+    </route>
+
+</routes>
