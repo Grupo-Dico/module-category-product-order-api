@@ -8,6 +8,9 @@
     <preference for="LeanCommerce\CategoryProductOrderApi\Api\CategoryProductOrderUpdateInterface"
                 type="LeanCommerce\CategoryProductOrderApi\Model\Service\UpdateCategoryProductOrder"/>
 
+    <preference for="LeanCommerce\CategoryProductOrderApi\Api\CategoryProductOrderBulkUpdateInterface"
+                type="LeanCommerce\CategoryProductOrderApi\Model\Service\BulkUpdateCategoryProductOrder"/>
+
     <preference for="LeanCommerce\CategoryProductOrderApi\Api\Data\CategoryProductOrderResponseInterface"
                 type="LeanCommerce\CategoryProductOrderApi\Model\Data\CategoryProductOrderResponse"/>
 
@@ -16,5 +19,7 @@
 
     <preference for="LeanCommerce\CategoryProductOrderApi\Api\Data\CategoryProductOrderUpdateResponseInterface"
                 type="LeanCommerce\CategoryProductOrderApi\Model\Data\CategoryProductOrderUpdateResponse"/>
+    <preference for="LeanCommerce\CategoryProductOrderApi\Api\Data\CategoryProductOrderBulkItemInterface"
+            type="LeanCommerce\CategoryProductOrderApi\Model\Data\CategoryProductOrderBulkItem"/>
 
 </config>

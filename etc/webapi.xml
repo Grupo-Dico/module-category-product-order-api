@@ -8,8 +8,16 @@
             <resource ref="LeanCommerce_CategoryProductOrderApi::category_product_order"/>
         </resources>
     </route>
+
     <route url="/V1/leancommerce/category-products/order" method="PUT">
         <service class="LeanCommerce\CategoryProductOrderApi\Api\CategoryProductOrderUpdateInterface" method="execute"/>
+        <resources>
+            <resource ref="LeanCommerce_CategoryProductOrderApi::category_product_order"/>
+        </resources>
+    </route>
+
+    <route url="/V1/leancommerce/category-products/order/bulk" method="PUT">
+        <service class="LeanCommerce\CategoryProductOrderApi\Api\CategoryProductOrderBulkUpdateInterface" method="execute"/>
         <resources>
             <resource ref="LeanCommerce_CategoryProductOrderApi::category_product_order"/>
         </resources>

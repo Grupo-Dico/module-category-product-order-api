@@ -9,12 +9,10 @@ use LeanCommerce\CategoryProductOrderApi\Api\Data\CategoryProductOrderUpdateResp
 use LeanCommerce\CategoryProductOrderApi\Model\Position\NativeCategoryPositionUpdater;
 use LeanCommerce\CategoryProductOrderApi\Model\Position\PositionEngineResolver;
 use LeanCommerce\CategoryProductOrderApi\Model\Position\VisualMerchandiserPositionUpdater;
-use LeanCommerce\CategoryProductOrderApi\Model\Search\ElasticsuiteCategoryProductProvider;
 use Magento\Catalog\Api\CategoryRepositoryInterface;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Framework\Indexer\IndexerRegistry;
 use Magento\Framework\Webapi\Exception as WebapiException;
 use Psr\Log\LoggerInterface;
 
@@ -25,9 +23,7 @@ class UpdateCategoryProductOrder implements CategoryProductOrderUpdateInterface
     private PositionEngineResolver $resolver;
     private NativeCategoryPositionUpdater $nativeUpdater;
     private VisualMerchandiserPositionUpdater $vmUpdater;
-    private ElasticsuiteCategoryProductProvider $elasticProvider;
     private CategoryProductOrderUpdateResponseInterfaceFactory $responseFactory;
-    private IndexerRegistry $indexerRegistry;
     private LoggerInterface $logger;
 
     public function __construct(
@@ -36,9 +32,7 @@ class UpdateCategoryProductOrder implements CategoryProductOrderUpdateInterface
         PositionEngineResolver $resolver,
         NativeCategoryPositionUpdater $nativeUpdater,
         VisualMerchandiserPositionUpdater $vmUpdater,
-        ElasticsuiteCategoryProductProvider $elasticProvider,
         CategoryProductOrderUpdateResponseInterfaceFactory $responseFactory,
-        IndexerRegistry $indexerRegistry,
         LoggerInterface $logger
     ) {
         $this->productRepository = $productRepository;
@@ -46,9 +40,7 @@ class UpdateCategoryProductOrder implements CategoryProductOrderUpdateInterface
         $this->resolver = $resolver;
         $this->nativeUpdater = $nativeUpdater;
         $this->vmUpdater = $vmUpdater;
-        $this->elasticProvider = $elasticProvider;
         $this->responseFactory = $responseFactory;
-        $this->indexerRegistry = $indexerRegistry;
         $this->logger = $logger;
     }
 
@@ -86,10 +78,6 @@ class UpdateCategoryProductOrder implements CategoryProductOrderUpdateInterface
             $adminPosition = $engine === PositionEngineResolver::ENGINE_VM
                 ? $this->vmUpdater->update($category, $product, $target_position, $store_id)
                 : $this->nativeUpdater->update($category, $product, $target_position);
-
-            $this->reindex((int) $category_id, (int) $product->getId());
-
-            $frontendPosition = $this->resolveFrontendPosition($category, $sku, $store_id);
         } catch (LocalizedException $exception) {
             $this->logger->warning('CategoryProductOrderApi detected an unsupported merchandising update.', [
                 'category_id' => $category_id,
@@ -116,6 +104,8 @@ class UpdateCategoryProductOrder implements CategoryProductOrderUpdateInterface
             throw new WebapiException(__('Unable to update product position at this time.'), 0, 500);
         }
 
+        $frontendPosition = null;
+
         $response = $this->responseFactory->create();
         $response->setCategoryId($category_id);
         $response->setSku($sku);
@@ -123,42 +113,8 @@ class UpdateCategoryProductOrder implements CategoryProductOrderUpdateInterface
         $response->setAppliedPositionSource($engine);
         $response->setAdminPosition($adminPosition);
         $response->setFrontendPosition($frontendPosition);
-        $response->setMessage($frontendPosition === $adminPosition ? 'Position updated' : 'Position updated; frontend index may still be refreshing');
+        $response->setMessage('Position updated. Reindex and frontend validation were skipped for faster response.');
 
         return $response;
-    }
-
-    private function resolveFrontendPosition($category, string $sku, int $storeId): ?int
-    {
-        try {
-            return $this->elasticProvider->getProductPosition($category, $sku, $storeId);
-        } catch (\Throwable $exception) {
-            $this->logger->warning('CategoryProductOrderApi could not resolve frontend position after update.', [
-                'category_id' => (int) $category->getId(),
-                'sku' => $sku,
-                'store_id' => $storeId,
-                'exception' => $exception,
-            ]);
-            return null;
-        }
-    }
-
-    private function reindex(int $categoryId, int $productId): void
-    {
-        foreach ([
-            'catalog_category_product' => [$categoryId],
-            'catalogsearch_fulltext' => [$productId],
-        ] as $indexerId => $ids) {
-            try {
-                $this->indexerRegistry->get($indexerId)->reindexList($ids);
-            } catch (\Throwable $exception) {
-                $this->logger->warning('CategoryProductOrderApi could not complete synchronous reindex.', [
-                    'indexer_id' => $indexerId,
-                    'category_id' => $categoryId,
-                    'product_id' => $productId,
-                    'exception' => $exception,
-                ]);
-            }
-        }
     }
 }

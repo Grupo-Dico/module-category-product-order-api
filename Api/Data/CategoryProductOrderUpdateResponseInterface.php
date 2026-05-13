@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LeanCommerce\CategoryProductOrderApi\Api\Data;
 
 interface CategoryProductOrderUpdateResponseInterface
@@ -80,4 +82,59 @@ interface CategoryProductOrderUpdateResponseInterface
      * @return $this
      */
     public function setMessage($message);
+
+    /**
+     * @return bool
+     */
+    public function getSuccess();
+
+    /**
+     * @param bool $success
+     * @return $this
+     */
+    public function setSuccess($success);
+
+    /**
+     * @return int
+     */
+    public function getUpdatedCount();
+
+    /**
+     * @param int $updatedCount
+     * @return $this
+     */
+    public function setUpdatedCount($updatedCount);
+
+    /**
+     * @return int
+     */
+    public function getSkippedCount();
+
+    /**
+     * @param int $skippedCount
+     * @return $this
+     */
+    public function setSkippedCount($skippedCount);
+
+    /**
+     * @return string[]
+     */
+    public function getUpdatedSkus();
+
+    /**
+     * @param string[] $updatedSkus
+     * @return $this
+     */
+    public function setUpdatedSkus(array $updatedSkus);
+
+    /**
+     * @return mixed[]
+     */
+    public function getSkipped();
+
+    /**
+     * @param mixed[] $skipped
+     * @return $this
+     */
+    public function setSkipped(array $skipped);
 }

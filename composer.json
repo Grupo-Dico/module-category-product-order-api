@@ -2,7 +2,7 @@
   "name": "leancommerce/module-category-product-order-api",
   "description": "Magento 2 API to read and update category product order aligned with ElasticSuite and native category positions.",
   "type": "magento2-module",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "proprietary",
   "require": {
     "php": ">=7.4 || >=8.1",
